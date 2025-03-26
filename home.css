@@ -1,0 +1,127 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Inter', sans-serif;
+  /* background-color: #fdeef4; */
+  color: #333;
+}
+
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  padding: 80px 10%;
+  background: linear-gradient(135deg, #ffccd5, #ffb3c6); /* Gradient Pink */
+  color: black;
+  border-radius: 20px;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #ff66a3; /* Vibrant Pink */
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #e64d89; /* Darker Pink */
+}
+
+/* Features Section */
+.features {
+  display: flex;
+  justify-content: space-around;
+  padding: 60px 10%;
+ 
+}
+
+.feature-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 30%;
+  border: 5px solid #fdeef4;
+}
+.feature-card p{
+  text-align: justify;
+  margin-top: 10px;
+}
+/* About Section */
+.about {
+  padding: 60px 10%;
+  text-align: center;
+
+  
+}
+
+.about h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  
+}
+
+.about p {
+  font-size: 1.1rem;
+  color: #555;
+  margin-top: 20px;
+}
+.about img{
+  border: 5px solid #fdeef4 ;
+  width: 50%;
+  border-radius: 20px;
+}
+.developers{
+  padding: 60px 10%;
+  text-align: center;
+}
+.developers img{
+  width: 50%;
+  border-radius: 20px;
+}
+.developers h2{
+  text-align: justify;
+  border: 5px solid #fdeef4;
+  border-radius: 10px;
+  padding: 30px;
+}
+.about h1{
+  margin-top: 20px;
+}
+
+/* Contact Section */
+.contact {
+  padding: 60px 10%;
+  text-align: center;
+  background: #fdeef4; /* Light Pink */
+}
+
+.contact h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #ff6699;
+}
+
+.contact p {
+  font-size: 1.1rem;
+  color: #555;
+}
+

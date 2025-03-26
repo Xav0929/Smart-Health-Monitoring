@@ -1,0 +1,190 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="css/register.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-section">
+            <div class="branding">
+                <h1>Smart Health Monitoring</h1>
+                <p>We provide Barangay Health Workers (BHWs) with a digital solution to simplify 
+                        patient data management and appointment scheduling. Our system automates 
+                        record-keeping, reducing workload and preventing data loss, so BHWs can 
+                        focus on delivering quality care with accurate, organized records.</p>
+            </div>
+        </div>
+
+        <div class="right-section">
+            <div class="register-box">
+                <h2>Register</h2>
+                <form id="registerForm">
+                    <div class="input-group">
+                        <label>First Name</label>
+                        <input type="text" id="fullname" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Last Name</label>
+                        <input type="text" id="fullname" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="password" required>
+                            <span class="toggle-password" onclick="togglePassword()">👁</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Confirm Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="password" required>
+                            <span class="toggle-password" onclick="togglePassword()">👁</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Register</button>
+                    <p id="error-message" class="error-message hidden"></p>
+                    <div class="login-link">
+                        <p>Already have an account? <a href="index.html">Login here</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+       function togglePassword() {
+            let passwordField = document.getElementById("password");
+            passwordField.type = passwordField.type === "password" ? "text" : "password";
+        }
+
+        document.getElementById('registerForm').onsubmit = async function(event) {
+            event.preventDefault();
+
+            const fullname = document.getElementById('fullname').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('registration.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ fullname, email, password })
+                });
+
+                const text = await response.text();
+                console.log("Raw Response:", text);
+
+                const data = JSON.parse(text);
+                console.log("Parsed JSON:", data);
+
+                if (data.success === "1") {
+                    window.location.href = 'index.html'; // ✅ Redirect to login.html
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('JSON Error:', error);
+                alert('Network Error: ' + error.message);
+            }
+        };
+    </script>
+</body>
+</html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="css/register.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-section">
+            <div class="branding">
+                <h1>Smart Health Monitoring</h1>
+                <p>We provide Barangay Health Workers (BHWs) with a digital solution to simplify 
+                        patient data management and appointment scheduling. Our system automates 
+                        record-keeping, reducing workload and preventing data loss, so BHWs can 
+                        focus on delivering quality care with accurate, organized records.</p>
+            </div>
+        </div>
+
+        <div class="right-section">
+            <div class="register-box">
+                <h2>Register</h2>
+                <form id="registerForm">
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" id="fullname" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="password" required>
+                            <span class="toggle-password" onclick="togglePassword()">👁</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Register</button>
+                    <p id="error-message" class="error-message hidden"></p>
+                    <div class="login-link">
+                        <p>Already have an account? <a href="index.html">Login here</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+       function togglePassword() {
+            let passwordField = document.getElementById("password");
+            passwordField.type = passwordField.type === "password" ? "text" : "password";
+        }
+
+        document.getElementById('registerForm').onsubmit = async function(event) {
+            event.preventDefault();
+
+            const fullname = document.getElementById('fullname').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('registration.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ fullname, email, password })
+                });
+
+                const text = await response.text();
+                console.log("Raw Response:", text);
+
+                const data = JSON.parse(text);
+                console.log("Parsed JSON:", data);
+
+                if (data.success === "1") {
+                    window.location.href = 'index.html'; // ✅ Redirect to login.html
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('JSON Error:', error);
+                alert('Network Error: ' + error.message);
+            }
+        };
+    </script>
+</body>
+</html>
+>>>>>>> aba50b88d02abc0f3148339440bdab16c59e817c

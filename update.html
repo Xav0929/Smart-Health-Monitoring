@@ -1,0 +1,228 @@
+<?php
+// Secure Headers
+header("Content-Type: application/json; charset=UTF-8");
+header("X-Frame-Options: DENY"); // Prevent Clickjacking
+header("X-Content-Type-Options: nosniff"); // Prevent MIME sniffing
+header("Referrer-Policy: no-referrer"); // No referrer data exposed
+
+// Database Connection
+$host = "fdb1030.awardspace.net";
+$user = "4585350_appointment";
+$password = "Migs0929*";
+$database = "4585350_appointment";
+
+$conn = new mysqli($host, $user, $password, $database);
+if ($conn->connect_error) {
+    echo json_encode(["success" => "0", "message" => "Database connection failed"]);
+    exit();
+}
+
+// Handle POST Request
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Get and sanitize inputs
+    $email = trim($_POST['email']);
+    $fullname = trim(htmlspecialchars($_POST['fullname'], ENT_QUOTES, 'UTF-8'));
+    $changePassword = isset($_POST['password']) && !empty($_POST['password']);
+    $password = $changePassword ? trim($_POST['password']) : null;
+
+    // Validate input
+    if (empty($fullname) || empty($email)) {
+        echo json_encode(["success" => "0", "message" => "Full name and email are required"]);
+        exit();
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(["success" => "0", "message" => "Invalid email format"]);
+        exit();
+    }
+
+    if (!preg_match("/^[a-zA-Z\s]+$/", $fullname)) {
+        echo json_encode(["success" => "0", "message" => "Full name should only contain letters and spaces"]);
+        exit();
+    }
+
+    if ($changePassword && strlen($password) < 8) {
+        echo json_encode(["success" => "0", "message" => "Password must be at least 8 characters long"]);
+        exit();
+    }
+
+    // Check if user exists
+    $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows === 0) {
+        echo json_encode(["success" => "0", "message" => "User not found"]);
+        $stmt->close();
+        $conn->close();
+        exit();
+    }
+    $stmt->close();
+
+    // Update user details
+    if ($changePassword) {
+        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+        $stmt = $conn->prepare("UPDATE users SET fullname=?, password=? WHERE email=?");
+        $stmt->bind_param("sss", $fullname, $hashed_password, $email);
+    } else {
+        $stmt = $conn->prepare("UPDATE users SET fullname=? WHERE email=?");
+        $stmt->bind_param("ss", $fullname, $email);
+    }
+
+    if ($stmt->execute()) {
+        echo json_encode(["success" => "1", "message" => "User info updated successfully"]);
+    } else {
+        echo json_encode(["success" => "0", "message" => "Update failed"]);
+    }
+
+    $stmt->close();
+}
+
+$conn->close();
+exit();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
+    <title>Update User Profile</title>
+    <link rel="stylesheet" href="css/update.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Left Section (Branding) -->
+        <div class="left-section">
+            <div class="branding">
+                
+            </div>
+        </div>
+
+        <!-- Right Section (Update Form) -->
+        <div class="right-section">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <h2>Update Info's</h2>
+                </div>
+                <form id="update-form">
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="email" >
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" id="first-name" >
+                    </div>
+
+                    <div class="password-toggle">
+                        <label>Change Password</label>
+                        <input type="checkbox" id="change-password">
+                    </div>
+
+                    <div id="password-fields" class="hidden">
+                        <div class="input-group">
+                            <label>Password</label>
+                            <input type="password" id="password">
+                        </div>
+
+                        <div class="input-group">
+                            <label>Confirm Password</label>
+                            <input type="password" id="confirm-password">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const changePasswordCheckbox = document.getElementById('change-password');
+    const passwordFields = document.getElementById('password-fields');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+
+    console.log(changePasswordCheckbox); // Check if it's correctly selected
+    console.log(passwordFields); // Ensure this is not null
+
+    // Toggle password fields when the checkbox is clicked
+    changePasswordCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            console.log("Checkbox checked - showing password fields");
+            passwordFields.classList.remove('hidden');
+        } else {
+            console.log("Checkbox unchecked - hiding password fields");
+            passwordFields.classList.add('hidden');
+        }
+    });
+
+    // Toggle password visibility
+    function togglePasswordVisibility(inputId) {
+        const inputField = document.getElementById(inputId);
+        inputField.type = inputField.type === 'password' ? 'text' : 'password';
+    }
+
+    // Add event listeners to toggle password visibility
+    passwordInput.addEventListener('click', function() {
+        console.log("Toggling password visibility");
+        togglePasswordVisibility('password');
+    });
+
+    confirmPasswordInput.addEventListener('click', function() {
+        console.log("Toggling confirm password visibility");
+        togglePasswordVisibility('confirm-password');
+    });
+
+    // Handle form submission
+    const form = document.getElementById('update-form');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const fullname = document.getElementById('first-name').value;
+        const changePassword = changePasswordCheckbox.checked;
+        const password = changePassword ? passwordInput.value : '';
+        const confirmPassword = changePassword ? confirmPasswordInput.value : '';
+
+        // Validate password fields if changePassword is checked
+        if (changePassword && password !== confirmPassword) {
+            alert("Passwords do not match!");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('fullname', fullname);
+
+        if (changePassword) {
+            formData.append('password', password);
+        }
+
+        // Send the form data via POST request to update.php
+        fetch('update-info.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())  // Assuming the response is JSON
+        .then(data => {
+            if (data.success === "1") {
+                alert("User info updated successfully");
+            } else {
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error submitting form:", error);
+            alert("An error occurred.");
+        });
+    });
+});
+
+    </script>
+</body>
+</html>

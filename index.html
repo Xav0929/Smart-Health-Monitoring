@@ -47,59 +47,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-   function togglePassword() {
-    let passwordField = document.getElementById("userpassword");
-    passwordField.type = passwordField.type === "password" ? "text" : "password";
-}
-
-document.getElementById('loginForm').onsubmit = async function(event) {
-    event.preventDefault();
-
-    const email = document.getElementById('useremail').value.trim();
-    const password = document.getElementById('userpassword').value.trim();
-    const errorMessage = document.getElementById('error-message');
-
-    if (!email || !password) {
-        errorMessage.innerText = "Please fill in all fields.";
-        errorMessage.classList.remove('hidden');
-        return;
-    }
-
-    try {
-        const response = await fetch('login.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ email: email, password: password })
-        });
-
-        const data = await response.json(); // Parse JSON response
-        console.log("Parsed JSON:", data);
-
-        if (data.success == 1) { // Convert to number for comparison
-            window.location.href = data.redirect_url;
-        } else {
-            // Show an alert if the account is pending
-            if (data.message.includes("pending role")) {
-                alert(data.message);
-            }
-            // Show the error message below the login form
-            errorMessage.innerText = data.message || "Invalid credentials, please try again.";
-            errorMessage.classList.remove('hidden');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Network Error: ' + error.message);
-    }
-};
-
-// Ensure register button works properly
-document.getElementById("registerLink").addEventListener("click", function(event) {
-    event.preventDefault(); // Prevent unintended redirection
-    window.location.href = "register.html"; // Redirect to register page
-});
-
-    </script>
+    <script src="js/login.js"></script>
 </body>
 </html>
